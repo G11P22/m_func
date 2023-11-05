@@ -1,0 +1,45 @@
+[fnClear=(tbl,optional shp,optional clearData, optional clearColumn, optional clearRows)=>
+   [tr=Table.TransformColumns(tbl,{},Text.From),
+    t= if  shp is null  then tbl else Table.Skip(tr,(r)=>not Text.Contains(Text.Combine(List.Select(Record.ToList(r),(x)=>x is text)),shp)),
+    p= if clearData is null then t else   [k=(x)=>if x=null then x else  Text.Combine(List.RemoveMatchingItems(Text.SplitAny(Text.Clean(x),clearData),{""})," "),
+    to=Table.TransformColumns(t,{},k)][to],
+    cl=if clearColumn is null then p else 
+    [a = List.Sort(Table.ColumnNames(p)),
+    b = Table.Profile(p,{{"tmp", (x)=>true,List.NonNullCount}})[tmp],
+    c = List.PositionOf(b,0,Occurrence.All),
+    d = List.Transform(c,(x)=>a{x}),
+    e = Table.RemoveColumns(p,d)][e],
+    to=if clearRows is null then cl else  Table.SelectRows(cl, each not List.IsEmpty(List.RemoveMatchingItems(Record.FieldValues(_), {"", null})))][to],
+
+  fnParsHead=(table,num,optional delim,optional fill)=>
+       [
+         lst = List.Buffer(Table.ToColumns(Table.Range(table,0,num))), 
+        delim = if delim=null then " " else delim,
+        f=(x,y)=>List.Accumulate(   List.Zip({x,y}),
+                                    [i=false,j={}],
+                                    (s,c)=>[i=s[i]=true or c{0}<>null,j=if i then s[j]&{c{0}} else s[j]&{c{0}??c{1}}]
+                                )[j],
+        g=(x)=>if fill=null then Text.Combine(x,delim) else Text.Combine(List.ReplaceValue(x,null,fill,Replacer.ReplaceValue),delim), 
+        gen = List.Generate(    ()=>[i=0,l=lst{i},o=l],
+                                (x)=>x[i]<List.Count(lst),
+                                (x)=>[i=x[i]+1,l=lst{i},o=f(l,x[o])],
+                                (x)=>g(x[o])
+                            ),
+        out = Table.RenameColumns(Table.Range(table,num),List.Zip({Table.ColumnNames(table),gen}))][out],
+
+
+TableToBinaryText = (tbl as table) as text=>
+    [
+      json = Json.FromValue(tbl),
+      bin = Binary.From(json),
+      compr = Binary.Compress(bin,Compression.Deflate),
+      txt = Binary.ToText(compr)][txt],
+
+TableFromBinaryText = (txt as text) as table =>
+    [
+      bin = Binary.FromText(txt),
+      dec = Binary.Decompress(bin,Compression.Deflate),
+      json = Json.Document(dec),
+      tbl = Table.FromRecords(json)][tbl]
+        
+    ]
