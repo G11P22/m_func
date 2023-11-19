@@ -1,5 +1,4 @@
-[
-  fnClear=(tbl,optional shp,optional clearData, optional clearColumn, optional clearRows)=>
+[fnClear=(tbl,optional shp,optional clearData, optional clearColumn, optional clearRows)=>
    [tr=Table.TransformColumns(tbl,{},Text.From),
     t= if  shp is null  then tbl else Table.Skip(tr,(r)=>not Text.Contains(Text.Combine(List.Select(Record.ToList(r),(x)=>x is text)),shp)),
     p= if clearData is null then t else   [k=(x)=>if x=null then x else  Text.Combine(List.RemoveMatchingItems(Text.SplitAny(Text.Clean(x),clearData),{""})," "),
