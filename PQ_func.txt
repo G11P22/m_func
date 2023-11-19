@@ -1,4 +1,3 @@
-
 [
   fnClear=(tbl,optional shp,optional clearData, optional clearColumn, optional clearRows)=>
    [tr=Table.TransformColumns(tbl,{},Text.From),
