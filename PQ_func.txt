@@ -1,6 +1,6 @@
 
 [
-  [note="Несколько функций для удобства работы с данными"],
+  note="Несколько функций для удобства работы с данными",
 
 fnClear=(tbl,optional shp,optional clearData, optional clearColumn, optional clearRows)=>
    [tr=Table.TransformColumns(tbl,{},Text.From),
