@@ -55,7 +55,7 @@ ProdactionCalc=(optional year as nullable number) =>
     tr=List.TransformMany(lst,f,g),
     tbl=Table.FromList(tr,(x)=>x,type table [Date=date,DateType=text])][tbl],
 
-fxUnzip=[func=(ZIP, optional options)=>
+fxUnzip=(ZIP, optional options)=>
     [
     encod = [a=options[Encoding]?,b=if a = null then 866 else a][b],
     compr = (x)=> if x =0 then Compression.None else Compression.Deflate,
