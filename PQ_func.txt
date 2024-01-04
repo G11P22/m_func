@@ -53,4 +53,6 @@ ProdactionCalc=(optional year as nullable number) =>
             c=List.Transform(b,(x)=>List.Range(Text.SplitAny(x,"><"),0,2))][c],
     g=(x,y)=>{#date(yr,x{0},Number.From(y{1})),Text.Remove(y{0},"""")},
     tr=List.TransformMany(lst,f,g),
-    tbl=Table.FromList(tr,(x)=>x,type table [Date=date,DateType=text])][tbl]]
+    tbl=Table.FromList(tr,(x)=>x,type table [Date=date,DateType=text])][tbl]
+
+]
