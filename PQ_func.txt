@@ -86,7 +86,7 @@ fxGetMCode=(file)=>
     from = fnUnzip(file){[Name="customXml/item1.xml"]}?[Value]?,
     bin = Binary.FromText(Xml.Document(from){0}[Value],BinaryEncoding.Base64),
     data = BinaryFormat.Choice(BinaryFormat.Binary(8),(x)=>BinaryFormat.Binary(u32(Binary.Range(x,4,4))))(bin),
-    unz = fxUnzip(data){[Name="Formulas/Section1.m"]}[Value],
+    unz = fnUnzip(data){[Name="Formulas/Section1.m"]}[Value],
     txt = Text.FromBinary(unz)&"#(cr,lf)",
     splt = Text.Split(txt,";#(cr,lf)"),
     lst = List.Range(splt,1,List.Count(splt)-2),
